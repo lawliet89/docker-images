@@ -1,2 +1,12 @@
 ---
 - include: pull.yml
+  tags:
+    - images
+- include: tars.yml
+  with_items: "{{ tars }}"
+  tags:
+    - tars
+- include: gzip.yml
+  with_items: "{{ gzips }}"
+  tags:
+    - gzip

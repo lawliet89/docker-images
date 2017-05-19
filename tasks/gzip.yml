@@ -1,0 +1,19 @@
+---
+# Load gzipped tarballs onto remote host
+- name: Get temporary file on remote machine
+  tempfile:
+    state: file
+  register: remote_file
+- name: "Copy {{ item }} to remote host"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ remote_file.path }}"
+  when: images
+- name: Load image on remote
+  shell: "gzip -c -d {{ remote_file.path }} | docker load"
+  args:
+    warn: False
+- name: Delete Temporary File on Remote
+  file:
+    path: "{{ remote_file.path }}"
+    state: absent

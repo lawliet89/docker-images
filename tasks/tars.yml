@@ -1,0 +1,19 @@
+---
+# Load tarballs onto remote host
+- name: Get temporary file on remote machine
+  tempfile:
+    state: file
+  register: remote_file
+- name: "Copy {{ item }} to remote host"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ remote_file.path }}"
+  when: images
+- name: Load image on remote
+  shell: "docker load -i {{ remote_file.path }}"
+  args:
+    warn: False
+- name: Delete Temporary File on Remote
+  file:
+    path: "{{ remote_file.path }}"
+    state: absent

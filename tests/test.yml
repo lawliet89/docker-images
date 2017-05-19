@@ -4,5 +4,9 @@
   vars:
     images:
       - hello-world:latest
+    tars:
+      - "{{ playbook_dir }}/hello-world.tar"
+    gzips:
+      - "{{ playbook_dir }}/hello-world.tar.gz"
   roles:
     - role: "{{ playbook_dir }}/../"

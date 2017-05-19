@@ -18,3 +18,5 @@ On Ansible control machine and host that executes module:
 - `images`: List of image names and tags to pull from registries
 - `force_pull_images`: Set to `True` to force a pull from registries even if images already exist on the control
 machine. Defaults to `False`.
+- `tars`: List of tarballs to load
+- `gzips`: List of Gzipped tarballs to load
