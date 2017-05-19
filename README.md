@@ -2,7 +2,10 @@
 
 Ansible role to load images onto a remote Docker host where access to a registry is not possible.
 
+
 ## Requirements
+
+- Ansible >= 2.3
 
 On Ansible control machine and host that executes module:
 
@@ -12,11 +15,6 @@ On Ansible control machine and host that executes module:
 
 ## Role Variables
 
-
-## Example Playbook
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- `images`: List of image names and tags to pull from registries
+- `force_pull_images`: Set to `True` to force a pull from registries even if images already exist on the control
+machine. Defaults to `False`.

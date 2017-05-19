@@ -1,0 +1,47 @@
+---
+# Steps to pull and load images from registries
+- name: Pull images to control machine
+  docker_image:
+    name: "{{ item }}"
+    force: "{{ force_pull_images | default(False) }}"
+    state: present
+  with_items: "{{ images }}"
+  delegate_to: localhost
+  when: images
+- name: Get temporary file on control machine
+  tempfile:
+    state: file
+    suffix: ".tar.gz"
+  register: docker_images_archive_control
+  when: images
+- name: "Tar and gzip images on control machine to {{ docker_images_archive_control.path }}"
+  shell: "docker save {{ images | join(' ') }} | gzip > {{ docker_images_archive_control.path }}"
+  args:
+    warn: False
+  when: images
+- name: Get temporary file on remote machine
+  tempfile:
+    state: file
+  register: docker_images_archive_remote
+  when: images
+- name: "Copy archive to remote"
+  copy:
+    src: "{{ docker_images_archive_control.path }}"
+    dest: "{{ docker_images_archive_remote.path }}"
+  when: images
+- name: Load image on remote
+  shell: "gzip -c -d {{ docker_images_archive_remote.path }} | docker load"
+  args:
+    warn: False
+  when: images
+- name: "Delete control temporary archive {{ docker_images_archive_control.path }}"
+  file:
+    path: "{{ docker_images_archive_control.path }}"
+    state: absent
+  delegate_to: localhost
+  when: images
+- name: "Delete remote temporary archive {{ docker_images_archive_remote.path }}"
+  file:
+    path: "{{ docker_images_archive_remote.path }}"
+    state: absent
+  when: images

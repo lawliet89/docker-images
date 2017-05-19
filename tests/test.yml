@@ -1,0 +1,8 @@
+---
+- name: Load Images
+  hosts: all
+  vars:
+    images:
+      - hello-world:latest
+  roles:
+    - role: "{{ playbook_dir }}/../"
