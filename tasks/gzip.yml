@@ -8,7 +8,6 @@
   copy:
     src: "{{ item }}"
     dest: "{{ remote_file.path }}"
-  when: images
 - name: Load image on remote
   shell: "gzip -c -d {{ remote_file.path }} | docker load"
   args:

@@ -8,7 +8,6 @@
   copy:
     src: "{{ item }}"
     dest: "{{ remote_file.path }}"
-  when: images
 - name: Load image on remote
   shell: "docker load -i {{ remote_file.path }}"
   args:
