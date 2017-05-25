@@ -1,20 +1,22 @@
 ---
 # Steps to pull and load images from registries
 - name: Pull images to control machine
+  delegate_to: localhost
   docker_image:
     name: "{{ item }}"
     force: "{{ force_pull_images | default(False) }}"
     state: present
   with_items: "{{ images }}"
-  delegate_to: localhost
   when: images
 - name: Get temporary file on control machine
+  delegate_to: localhost
   tempfile:
     state: file
     suffix: ".tar.gz"
   register: docker_images_archive_control
   when: images
-- name: "Tar and gzip images on control machine to {{ docker_images_archive_control.path }}"
+- name: "Tar and gzip images on control machine"
+  delegate_to: localhost
   shell: "docker save {{ images | join(' ') }} | gzip > {{ docker_images_archive_control.path }}"
   args:
     warn: False
