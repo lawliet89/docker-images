@@ -8,8 +8,16 @@
   copy:
     src: "{{ item }}"
     dest: "{{ remote_file.path }}"
-- name: Load image on remote
-  shell: "gzip -c -d {{ remote_file.path }} | docker load"
+- name: Ungzip on remote
+  shell: "gzip -d {{ remote_file.path }}"
+  args:
+    warn: False
+- name: Load image
+  shell: "docker load -i {{ remote_file.path }}"
+  become: "{{ docker_become.become | default(omit) }}"
+  become_user: "{{ docker_become.become_user | default(omit) }}"
+  become_method: "{{ docker_become.become_method | default(omit) }}"
+  become_flags: "{{ docker_become.become_flags | default(omit) }}"
   args:
     warn: False
 - name: Delete Temporary File on Remote
