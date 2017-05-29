@@ -24,6 +24,7 @@
 - name: Get temporary file on remote machine
   tempfile:
     state: file
+    suffix: ".tar.gz"
   register: docker_images_archive_remote
   when: images
 - name: "Copy archive to remote"
@@ -37,7 +38,7 @@
     warn: False
   when: images
 - name: Load image
-  shell: "docker load -i {{ docker_images_archive_remote.path }}"
+  shell: "docker load -i {{ docker_images_archive_remote.path | regex_replace('\\.gz$', '') }}"
   become: "{{ docker_become }}"
   args:
     warn: False
@@ -50,6 +51,6 @@
   when: images
 - name: "Delete remote temporary archive {{ docker_images_archive_remote.path }}"
   file:
-    path: "{{ docker_images_archive_remote.path }}"
+    path: "{{ docker_images_archive_remote.path  | regex_replace('\\.gz$', '') }}"
     state: absent
   when: images
