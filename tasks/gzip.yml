@@ -14,12 +14,8 @@
   copy:
     src: "{{ item }}"
     dest: "{{ remote_archive.path }}"
-- name: Ungzip on remote
-  shell: "gzip -c -d {{ remote_archive.path }} > {{ remote_tar.path }}"
-  args:
-    warn: False
 - name: Load image
-  shell: "docker load -i {{ remote_tar.path }}"
+  shell: "gunzip -c {{ remote_archive.path }} | docker load"
   become: "{{ docker_become }}"
   args:
     warn: False
